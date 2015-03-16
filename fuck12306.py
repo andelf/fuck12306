@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # #  FileName    : fuck12306.py
-# #  Author      : ShuYu Wang <andelf@gmail.com>
+# #  Author      : MaoMaog Wang <andelf@gmail.com>
 # #  Created     : Mon Mar 16 22:08:41 2015 by ShuYu Wang
 # #  Copyright   : Feather (c) 2015
 # #  Description : fuck fuck 12306
-# #  Time-stamp: <2015-03-16 22:08:54 andelf>
+# #  Time-stamp: <2015-03-16 22:12:31 andelf>
 
 
 from PIL import Image
