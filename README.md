@@ -9,7 +9,7 @@
 
 # 截图
 
-![](./screenshots/pic1.png)
+![](./screenshots/pic1.jpg)
 
 ```
 > 结果
@@ -23,7 +23,7 @@
 (1, 3) 波导|可转穿衣镜|手机
 ```
 
-![](./screenshots/pic2.png)
+![](./screenshots/pic2.jpg)
 
 ```
 >
