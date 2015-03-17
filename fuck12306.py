@@ -1,13 +1,14 @@
 #!/usr/bin/python
 # #  FileName    : fuck12306.py
-# #  Author      : MaoMaog Wang <andelf@gmail.com>
+# #  Author      : MaoMao Wang <andelf@gmail.com>
 # #  Created     : Mon Mar 16 22:08:41 2015 by ShuYu Wang
 # #  Copyright   : Feather (c) 2015
 # #  Description : fuck fuck 12306
-# #  Time-stamp: <2015-03-16 22:12:31 andelf>
+# #  Time-stamp: <2015-03-17 10:57:44 andelf>
 
 
 from PIL import Image
+from PIL import ImageFilter
 import urllib
 import urllib2
 import re
@@ -65,6 +66,7 @@ def baidu_stu_lookup(im):
 
     return baidu_stu_html_extract(html)
 
+
 def baidu_stu_html_extract(html):
     #pattern = re.compile(r'<script type="text/javascript">(.*?)</script>', re.DOTALL | re.MULTILINE)
     pattern = re.compile(r"keywords:'(.*?)'")
@@ -82,9 +84,57 @@ def baidu_stu_html_extract(html):
     return '|'.join(result) if result else '[UNKOWN]'
 
 
+def ocr_question_extract(im):
+    # git@github.com:madmaze/pytesseract.git
+    global pytesseract
+    try:
+        import pytesseract
+    except:
+        print "[ERROR] pytesseract not installed"
+        return
+    im = im.crop((127, 3, 260, 22))
+    im = pre_ocr_processing(im)
+    # im.show()
+    return pytesseract.image_to_string(im, lang='chi_sim').strip()
+
+
+def pre_ocr_processing(im):
+    im = im.convert("RGB")
+    width, height = im.size
+
+    white = im.filter(ImageFilter.BLUR).filter(ImageFilter.MaxFilter(23))
+    grey = im.convert('L')
+    impix = im.load()
+    whitepix = white.load()
+    greypix = grey.load()
+
+    for y in range(height):
+        for x in range(width):
+            greypix[x,y] = min(255, max(255 + impix[x,y][0] - whitepix[x,y][0],
+                                        255 + impix[x,y][1] - whitepix[x,y][1],
+                                        255 + impix[x,y][2] - whitepix[x,y][2]))
+
+    new_im = grey.copy()
+    binarize(new_im, 150)
+    return new_im
+
+
+def binarize(im, thresh=120):
+    assert 0 < thresh < 255
+    assert im.mode == 'L'
+    w, h = im.size
+    for y in xrange(0, h):
+        for x in xrange(0, w):
+            if im.getpixel((x,y)) < thresh:
+                im.putpixel((x,y), 0)
+            else:
+                im.putpixel((x,y), 255)
+
+
 if __name__ == '__main__':
     im = get_img()
     #im = Image.open("./tmp.jpg")
+    print 'OCR Question:', ocr_question_extract(im)
     for y in range(2):
         for x in range(4):
             im2 = get_sub_img(im, x, y)

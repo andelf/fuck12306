@@ -7,7 +7,18 @@
 
 [如何评价12306的最新版验证码？](http://www.zhihu.com/question/28795373/answer/42181689)
 
+
+## Update
+
+Day2: pytesseract OCR question. 锐化二值化处理文字后交给 tesseract。
+
 # 截图
+
+![](./screenshots/pic3.jpg)
+
+![](./screenshots/shot3.png)
+
+pytesseract 用默认官方中文数据，其实效果很差，不过Good Case也有。
 
 ![](./screenshots/pic1.jpg)
 
