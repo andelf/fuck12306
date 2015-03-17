@@ -72,7 +72,7 @@ def baidu_stu_html_extract(html):
     pattern = re.compile(r"keywords:'(.*?)'")
     matches = pattern.findall(html)
     if not matches:
-        return '[UNKOWN]'
+        return '[UNKNOWN]'
     json_str = matches[0]
 
     json_str = json_str.replace('\\x22', '"').replace('\\\\', '\\')
@@ -81,7 +81,7 @@ def baidu_stu_html_extract(html):
 
     result = [item['keyword'] for item in json.loads(json_str)]
 
-    return '|'.join(result) if result else '[UNKOWN]'
+    return '|'.join(result) if result else '[UNKNOWN]'
 
 
 def ocr_question_extract(im):
