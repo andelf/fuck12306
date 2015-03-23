@@ -13,6 +13,8 @@ import urllib
 import urllib2
 import re
 import json
+import tempfile
+import os
 # hack CERTIFICATE_VERIFY_FAILED
 # https://github.com/mtschirs/quizduellapi/issues/2
 import ssl
@@ -28,10 +30,16 @@ pic_url = "https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=login&ran
 def get_img():
     resp = urllib.urlopen(pic_url)
     raw = resp.read()
-    with open("./tmp.jpg", 'wb') as fp:
+    tmp_jpg = tempfile.NamedTemporaryFile(prefix="fuck12306_").name + ".jpg"
+    with open(tmp_jpg, 'wb') as fp:
         fp.write(raw)
 
-    return Image.open("./tmp.jpg")
+    im = Image.open(tmp_jpg)
+    try:
+        os.remove(tmp_jpg)
+    except OSError:
+        pass
+    return im
 
 
 def get_sub_img(im, x, y):
