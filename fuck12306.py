@@ -57,8 +57,13 @@ def get_sub_img(im, x, y):
 
 def baidu_stu_lookup(im):
     url = "http://stu.baidu.com/n/image?fr=html5&needRawImageUrl=true&id=WU_FILE_0&name=233.png&type=image%2Fpng&lastModifiedDate=Mon+Mar+16+2015+20%3A49%3A11+GMT%2B0800+(CST)&size="
-    im.save("./query_temp_img.png")
-    raw = open("./query_temp_img.png", 'rb').read()
+    tmp_jpg = tempfile.NamedTemporaryFile(prefix="fuck12306_").name + ".png"
+    im.save(tmp_jpg)
+    raw = open(tmp_jpg, 'rb').read()
+    try:
+        os.remove(tmp_jpg)
+    except OSError:
+        pass
     url = url + str(len(raw))
     req = urllib2.Request(url, raw, {'Content-Type':'image/png', 'User-Agent':UA})
     resp = urllib2.urlopen(req)
