@@ -24,7 +24,8 @@ if hasattr(ssl, '_create_unverified_context'):
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.89 Safari/537.36"
 
-pic_url = "https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=login&rand=sjrand&0.21191171556711197"
+# pic_url = "https://kyfw.12306.cn/otn/passcodeNew/getPassCodeNew?module=login&rand=sjrand&0.21191171556711197"
+pic_url = "http://pic3.zhimg.com/76754b27584233c2287986dc0577854a_b.jpg"
 
 
 def get_img():
