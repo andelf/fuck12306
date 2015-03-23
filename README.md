@@ -7,6 +7,10 @@
 
 [如何评价12306的最新版验证码？](http://www.zhihu.com/question/28795373/answer/42181689)
 
+## Prerequisites:
+
+1. 需要安装PIL以及pytesseract库
+2. 需要安装[google tesseract-ocr](https://code.google.com/p/tesseract-ocr/)
 
 ## Update
 
