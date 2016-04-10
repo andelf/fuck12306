@@ -16,6 +16,8 @@
 
 Day2: pytesseract OCR question. 锐化二值化处理文字后交给 tesseract。
 
+2016-4-10: 更新至目前百度识图API
+
 # 截图
 
 ![](./screenshots/pic3.jpg)
