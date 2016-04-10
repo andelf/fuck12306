@@ -4,15 +4,16 @@
 # #  Created     : Mon Mar 16 22:08:41 2015 by ShuYu Wang
 # #  Copyright   : Feather (c) 2015
 # #  Description : fuck fuck 12306
-# #  Time-stamp: <2015-03-17 10:57:44 andelf>
-
+# #  Time-stamp: <2016-04-10 16:21:03 andelf>
 
 from PIL import Image
 from PIL import ImageFilter
 import urllib
 import urllib2
+import requests
 import re
 import json
+
 # hack CERTIFICATE_VERIFY_FAILED
 # https://github.com/mtschirs/quizduellapi/issues/2
 import ssl
@@ -46,40 +47,53 @@ def get_sub_img(im, x, y):
     return im.crop((left, top, right, bottom))
 
 
-def baidu_stu_lookup(im):
-    url = "http://stu.baidu.com/n/image?fr=html5&needRawImageUrl=true&id=WU_FILE_0&name=233.png&type=image%2Fpng&lastModifiedDate=Mon+Mar+16+2015+20%3A49%3A11+GMT%2B0800+(CST)&size="
+
+def baidu_image_upload(im):
+    url = "http://image.baidu.com/pictureup/uploadshitu?fr=flash&fm=index&pos=upload"
+
     im.save("./query_temp_img.png")
     raw = open("./query_temp_img.png", 'rb').read()
-    url = url + str(len(raw))
-    req = urllib2.Request(url, raw, {'Content-Type':'image/png', 'User-Agent':UA})
-    resp = urllib2.urlopen(req)
 
-    resp_url = resp.read()      # return a pure url
+    files = {
+        'fileheight'   : "0",
+        'newfilesize'  : str(len(raw)),
+        'compresstime' : "0",
+        'Filename'     : "image.png",
+        'filewidth'    : "0",
+        'filesize'     : str(len(raw)),
+        'filetype'     : 'image/png',
+        'Upload'       : "Submit Query",
+        'filedata'     : ("image.png", raw)
+    }
+
+    resp = requests.post(url, files=files, headers={'User-Agent':UA})
+
+    #  resp.url
+    redirect_url = "http://image.baidu.com" + resp.text
+    return redirect_url
 
 
-    url = "http://stu.baidu.com/n/searchpc?queryImageUrl=" + urllib.quote(resp_url)
 
-    req = urllib2.Request(url, headers={'User-Agent':UA})
-    resp = urllib2.urlopen(req)
+def baidu_stu_lookup(im):
+    redirect_url = baidu_image_upload(im)
 
-    html = resp.read()
+    #print redirect_url
+    resp = requests.get(redirect_url)
+
+    html = resp.text
 
     return baidu_stu_html_extract(html)
 
 
 def baidu_stu_html_extract(html):
-    #pattern = re.compile(r'<script type="text/javascript">(.*?)</script>', re.DOTALL | re.MULTILINE)
-    pattern = re.compile(r"keywords:'(.*?)'")
+    pattern = re.compile(r"'multitags':\s*'(.*?)'")
     matches = pattern.findall(html)
     if not matches:
-        return '[UNKOWN]'
-    json_str = matches[0]
+        return '[ERROR?]'
 
-    json_str = json_str.replace('\\x22', '"').replace('\\\\', '\\')
+    tags_str = matches[0]
 
-    #print json_str
-
-    result = [item['keyword'] for item in json.loads(json_str)]
+    result =  list(filter(None, tags_str.replace('\t', ' ').split()))
 
     return '|'.join(result) if result else '[UNKOWN]'
 
@@ -134,9 +148,13 @@ def binarize(im, thresh=120):
 if __name__ == '__main__':
     im = get_img()
     #im = Image.open("./tmp.jpg")
-    print 'OCR Question:', ocr_question_extract(im)
+    try:
+        print 'OCR Question:', ocr_question_extract(im)
+    except:
+        print '<OCR failed>'
     for y in range(2):
         for x in range(4):
             im2 = get_sub_img(im, x, y)
+
             result = baidu_stu_lookup(im2)
             print (y,x), result
