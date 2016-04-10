@@ -4,7 +4,7 @@
 # #  Created     : Mon Mar 16 22:08:41 2015 by ShuYu Wang
 # #  Copyright   : Feather (c) 2015
 # #  Description : fuck fuck 12306
-# #  Time-stamp: <2016-04-10 16:21:03 andelf>
+# #  Time-stamp: <2016-04-10 16:28:41 andelf>
 
 from PIL import Image
 from PIL import ImageFilter
@@ -150,8 +150,8 @@ if __name__ == '__main__':
     #im = Image.open("./tmp.jpg")
     try:
         print 'OCR Question:', ocr_question_extract(im)
-    except:
-        print '<OCR failed>'
+    except Exception as e:
+        print '<OCR failed>', e
     for y in range(2):
         for x in range(4):
             im2 = get_sub_img(im, x, y)
